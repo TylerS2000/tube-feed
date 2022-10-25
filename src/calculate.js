@@ -13,10 +13,12 @@ export default function calculateTf(tfVals){
    let pro2=0
    let range1p
    let range2p
-   let bw
+   let bw ="IBW"
    let tfKcals
    let tfProtein
-   let tfNeeds
+   let protein
+   let volume
+   let totalVolume
 
    if(gender==="male"){idealWtVal = (106 + 6*(htVal-60))/2.2;}
         else if(gender==="female"){idealWtVal = (100 + 5*(htVal-60))/2.2;}
@@ -35,9 +37,18 @@ export default function calculateTf(tfVals){
                         else if(BMI>=30 && BMI <40){pro1+=1.2; pro2+=1.4;range1p = pro1 * idealWtVal; range2p = pro2 * idealWtVal;}
                             else if(BMI>=40 && BMI <50){pro1+=1.8; pro2+=2;range1p = pro1 * idealWtVal; range2p = pro2 * idealWtVal;}
                                 else if(BMI >= 50){pro1+=1.8; pro2+=2;range1p = pro1 * idealWtVal; range2p = pro2 * idealWtVal;}
-        console.log(range1p, range2p, lowerKcalRange, upperKcalRange)
 
-    if (tf==="jevity"){tfKcals=1500; tfProtein=63.8; }
+        console.log(range1p, range2p, lowerKcalRange, upperKcalRange)
+        let tfNeeds=(lowerKcalRange+upperKcalRange)/2
+    if (tf==="jevity"){
+        tfKcals=1.5; tfProtein=63.8; volume = (Math.round(((tfNeeds/tfKcals)/20) / 5) * 5); 
+        protein = tfProtein*((volume*20)/1000);
+        if(protein>=(range1p*.9) && protein<=(range2p*1.1)){console.log("yaya")}
+        else{while(protein<=(range1p*.9) && protein>=(range2p*1.1)){
+            
+        }}
+    }
+    console.log(volume*20, protein);
 
     
                             
