@@ -14,7 +14,8 @@ export default function Input(){
     }
 
     function handleClick(){
-    calculateTf(tfVals)
+    console.log(calculateTf(tfVals))
+    
     }
 
     return(
