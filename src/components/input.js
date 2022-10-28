@@ -6,15 +6,19 @@ export default function Input(){
         weight:"",
         height:"",
         tf:"",
-        gender:"" 
+        gender:"",
+        severity:"",
+        propofol:""
     })
+    const[final,setFinal]=React.useState("")
 
     function handleChange(event){  
        setTfVals((prev)=>{return{...prev,[event.target.name]:event.target.value}})
+       console.log(tfVals.severity)
     }
 
     function handleClick(){
-    console.log(calculateTf(tfVals))
+   setFinal(calculateTf(tfVals))
     
     }
 
@@ -31,7 +35,13 @@ export default function Input(){
             <option>Select TF</option>
             <option value="jevity">Jevity</option>
        </select>
+       <select name="severity" onChange={handleChange} value={tfVals.severity}>
+        <option value="normal">normal</option>
+        <option value="critically ill">critically ill</option>
+       </select>
+       <input placeholder="propofol rate" name="propofol" value={tfVals.propofol} onChange={handleChange} ></input>
        <button onClick={handleClick}>Submit</button>
+       <p>{final}</p>
     </div>
     )
 }
