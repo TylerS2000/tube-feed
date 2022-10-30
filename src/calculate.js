@@ -46,10 +46,16 @@ console.log(propofolCalories)
     //make something that checks if protein is adequate at max kcal allowance
     if (protein <= (range1p * .9)) {
         console.log("in protein adding loop")
+        while(protein<range1p&&kcalsProvided<upperKcalRange){
+            tfRate=tfRate+5;
+            protein = tfProtein * ((tfRate * 20) / 1000);
+            kcalsProvided=tfKcals*tfRate*20;
+        }
         tfNeeds = upperKcalRange-propofolCalories
         tfRate = (Math.round(((tfNeeds / tfKcals) / 20) / 5) * 5)
         protein = tfProtein * ((tfRate * 20) / 1000)
         kcalsProvided = tfKcals * tfRate * 20
+    
         while (protein < (range1p)) {
             tfRate = tfRate - 5;
             protinex++
@@ -69,7 +75,7 @@ console.log(propofolCalories)
 
   
 
-    console.log(kcalsProvided, propofolCalories, lowerKcalRange, upperKcalRange, protein, range1p);
+    console.log(kcalsProvided, propofolCalories, lowerKcalRange, upperKcalRange, protein, range1p, range2p);
     if (protein >= (range1p * .9) && protein <= (range2p * 1.1) && (kcalsProvided+propofolCalories) >= (lowerKcalRange * .9) && (kcalsProvided+propofolCalories) <= (upperKcalRange * 1.1)) {
         return (protinex ? `Pt needs ${lowerKcalRange}-${upperKcalRange} kcals and ${range1p}-${range2p} g of protein
     ${tf} running at ${tfRate} ml/hr providing, with ${protinex} protinex, ${kcalsProvided} kcals, ${protein} grams of protein, and a total volume of ${tfRate * 20}` : `Pt needs ${lowerKcalRange}-${upperKcalRange} kcals and ${range1p}-${range2p} g of protein
