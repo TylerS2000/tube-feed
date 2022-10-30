@@ -1,5 +1,6 @@
+
 export default function calculateTf(tfVals) {
-    let htVal = tfVals.height, wtVal = tfVals.weight, severity = tfVals.severity, tf = tfVals.tf, gender = tfVals.gender, propofolCalories=Math.round(tfVals.propofol*1.1*24), BMI = wtVal / ((htVal * 2.54 / 100) * (htVal * 2.54 / 100)), lowerKcalRange, upperKcalRange, idealWtVal, kcal1, kcal2, pro1 = 0, pro2 = 0, range1p, range2p, bw = "IBW", tfKcals, tfProtein, protein, tfRate, totalVolume, protinex = 0, serverity = "b", kcalsProvided
+    let htVal = tfVals.height, wtVal = tfVals.weight, severity = tfVals.severity, tf = tfVals.tf, gender = tfVals.gender,propofol=tfVals.propofol, propofolCalories=Math.round(propofol*1.1*24), BMI = wtVal / ((htVal * 2.54 / 100) * (htVal * 2.54 / 100)), lowerKcalRange, upperKcalRange, idealWtVal, kcal1, kcal2, pro1 = 0, pro2 = 0, range1p, range2p, bw = "IBW", tfKcals, tfProtein, protein, tfRate, totalVolume, protinex = 0, kcalsProvided
 
     if (gender === "male") { idealWtVal = (106 + 6 * (htVal - 60)) / 2.2; }
     else if (gender === "female") { idealWtVal = (100 + 5 * (htVal - 60)) / 2.2; }
@@ -29,7 +30,10 @@ export default function calculateTf(tfVals) {
 
     }
     if (tf === "jevity") {
-        tfKcals = 1.0; tfProtein = 0;
+        tfKcals = 1.5; tfProtein = 67;
+    }
+    else if(tf==="vital"){
+        tfKcals = 1.0; tfProtein=87;
     }
 
     let tfNeeds = ((upperKcalRange + lowerKcalRange) / 2)-propofolCalories
@@ -41,6 +45,7 @@ export default function calculateTf(tfVals) {
 console.log(propofolCalories)
     //make something that checks if protein is adequate at max kcal allowance
     if (protein <= (range1p * .9)) {
+        console.log("in protein adding loop")
         tfNeeds = upperKcalRange-propofolCalories
         tfRate = (Math.round(((tfNeeds / tfKcals) / 20) / 5) * 5)
         protein = tfProtein * ((tfRate * 20) / 1000)
@@ -61,7 +66,8 @@ console.log(propofolCalories)
             return ("tube feed provides too much protein")
         }
     }
-    else{return("Choose another TF")}
+
+  
 
     console.log(kcalsProvided, propofolCalories, lowerKcalRange, upperKcalRange, protein, range1p);
     if (protein >= (range1p * .9) && protein <= (range2p * 1.1) && (kcalsProvided+propofolCalories) >= (lowerKcalRange * .9) && (kcalsProvided+propofolCalories) <= (upperKcalRange * 1.1)) {

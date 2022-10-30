@@ -8,8 +8,7 @@ export default function Input(){
         tf:"",
         gender:"",
         severity:"",
-        propofol:""
-    })
+        propofol:0})
     const[final,setFinal]=React.useState("")
 
     function handleChange(event){  
@@ -33,7 +32,8 @@ export default function Input(){
         </select>
        <select name="tf" onChange={handleChange} value={tfVals.tf}>
             <option>Select TF</option>
-            <option value="jevity">Jevity</option>
+            <option value="jevity">Jevity 1.5</option>
+            <option value="vital">Vital HP</option>
        </select>
        <select name="severity" onChange={handleChange} value={tfVals.severity}>
         <option value="normal">normal</option>
