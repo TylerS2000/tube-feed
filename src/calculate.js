@@ -22,11 +22,12 @@ export default function calculateTf(tfVals) {
     else {
         if (BMI < 30) { pro1 += 1.2; pro2 += 2.0; kcal1 = 25; kcal2 = 30; bw = "ABW" }
         else if (BMI >= 30 && BMI <= 40) { pro1 += 2.0; pro2 += 2.0; kcal1 = 11; kcal2 = 14; }
-        else if (BMI > 40 && BMI <= 50) { pro1 += 2.0; pro2 += 2.5; kcal1 = 22; kcal2 = 25 }
+        else if (BMI > 40 && BMI <= 50) { pro1 += 2.0; pro2 += 2.5; kcal1 = 11; kcal2 = 14; }
+        else { pro1 += 2.0; pro2 += 2.5; kcal1 = 22; kcal2 = 25 }
         range1p = pro1 * (BMI >= 30 ? idealWtVal : wtVal)
         range2p = pro2 * (BMI >= 30 ? idealWtVal : wtVal)
-        lowerKcalRange = kcal1 * (BMI < 50 ? idealWtVal : wtVal)
-        upperKcalRange = kcal2 * (BMI < 50 ? idealWtVal : wtVal)
+        lowerKcalRange = kcal1 * (BMI > 50 ? idealWtVal : wtVal)
+        upperKcalRange = kcal2 * (BMI > 50 ? idealWtVal : wtVal)
 
     }
     if (tf === "jevity") {
@@ -46,15 +47,13 @@ console.log(propofolCalories)
     //make something that checks if protein is adequate at max kcal allowance
     if (protein <= (range1p * .9)) {
         console.log("in protein adding loop")
-        while(protein<range1p&&kcalsProvided<upperKcalRange){
+        while(protein<range1p&&kcalsProvided+propofol<upperKcalRange){
             tfRate=tfRate+5;
             protein = tfProtein * ((tfRate * 20) / 1000);
             kcalsProvided=tfKcals*tfRate*20;
         }
-        tfNeeds = upperKcalRange-propofolCalories
-        tfRate = (Math.round(((tfNeeds / tfKcals) / 20) / 5) * 5)
-        protein = tfProtein * ((tfRate * 20) / 1000)
-        kcalsProvided = tfKcals * tfRate * 20
+       
+
     
         while (protein < (range1p)) {
             tfRate = tfRate - 5;
@@ -68,7 +67,7 @@ console.log(propofolCalories)
         tfRate = (Math.round(((tfNeeds / tfKcals) / 20) / 5) * 5)
         protein = tfProtein * ((tfRate * 20) / 1000)
         kcalsProvided = tfKcals * tfRate * 20
-        while (protein >= 1.1) {
+        while (protein >= range2p*1.1) {
             return ("tube feed provides too much protein")
         }
     }
@@ -77,9 +76,10 @@ console.log(propofolCalories)
 
     console.log(kcalsProvided, propofolCalories, lowerKcalRange, upperKcalRange, protein, range1p, range2p);
     if (protein >= (range1p * .9) && protein <= (range2p * 1.1) && (kcalsProvided+propofolCalories) >= (lowerKcalRange * .9) && (kcalsProvided+propofolCalories) <= (upperKcalRange * 1.1)) {
-        return (protinex ? `Pt needs ${lowerKcalRange}-${upperKcalRange} kcals and ${range1p}-${range2p} g of protein
-    ${tf} running at ${tfRate} ml/hr providing, with ${protinex} protinex, ${kcalsProvided} kcals, ${protein} grams of protein, and a total volume of ${tfRate * 20}` : `Pt needs ${lowerKcalRange}-${upperKcalRange} kcals and ${range1p}-${range2p} g of protein
-    ${tf} running at ${tfRate} ml/hr providing ${kcalsProvided} kcals, ${protein} grams of protein, and a total volume of ${tfRate * 20}`)
+        return (protinex ? `(${Math.round(lowerKcalRange)}-${Math.round(upperKcalRange)}) kcals and (${Math.round(range1p)}-${Math.round(range2p)}) g of protein.
+    ${tf} running at ${tfRate} ml/hr providing, with ${protinex} protinex, ${kcalsProvided} kcals, ${protein} grams of protein, and a total volume of ${tfRate * 20}` : `Pt needs ${Math.round(lowerKcalRange)}-${Math.round(upperKcalRange)} kcals and ${Math.round(range1p)}-${Math.round(range2p)} g of protein
+    ${tf} running at ${tfRate} ml/hr providing ${kcalsProvided} kcals, ${Math.round(protein)} grams of protein, and a total volume of ${tfRate * 20}mls`)
     }
+    else{return(`${BMI}`)}
 
 }
