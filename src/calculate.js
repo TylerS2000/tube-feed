@@ -8,6 +8,72 @@ function calculateIdealWeight(gender, height) {
   return Math.round(idealWeight * 10) / 10;
 }
 
+let kcal1
+let kcal2
+let pro1=0
+let pro2=0
+
+function calculateNeeds(BMI,severity){
+    if (severity !== "critically ill") {
+        if (BMI < 19) {
+          kcal1 = 30;
+          kcal2 = 35;
+          pro1 = 1.4;
+          pro2 = 1.6;
+        } else if (BMI >= 19 && BMI <= 25) {
+          kcal1 = 25;
+          kcal2 = 30;
+          pro1 = 1.0;
+          pro2 = 1.2;
+        } else if (BMI > 25 && BMI < 30) {
+          kcal1 = 20;
+          kcal2 = 25;
+          pro1 = 1.4;
+          pro2 = 1.6;
+        } else if (BMI >= 30 && BMI < 40) {
+          kcal1 = 15;
+          kcal2 = 18;
+          pro1 = 1.2;
+          pro2 = 1.4;
+        } else if (BMI >= 40 && BMI < 50) {
+          kcal1 = 8;
+          kcal2 = 15;
+          pro1 = 1.8;
+          pro2 = 2;
+        } else if (BMI >= 50) {
+          kcal1 = 8;
+          kcal2 = 11;
+          pro1 = 1.8;
+          pro2 = 2;
+        }
+    
+       
+      } else {
+        if (BMI < 30) {
+          pro1 = 1.2;
+          pro2 = 2.0;
+          kcal1 = 25;
+          kcal2 = 30;
+          
+        } else if (BMI >= 30 && BMI <= 40) {
+          pro1 = 2.0;
+          pro2 = 2.0;
+          kcal1 = 11;
+          kcal2 = 14;
+        } else if (BMI > 40 && BMI <= 50) {
+          pro1 = 2.0;
+          pro2 = 2.5;
+          kcal1 = 11;
+          kcal2 = 14;
+        } else {
+          pro1 = 2.0;
+          pro2 = 2.5;
+          kcal1 = 22;
+          kcal2 = 25;
+        }
+}
+}
+
 export default function calculateTf(tfVals) {
   let htVal = tfVals.height,
     wtVal = tfVals.weight,
@@ -19,10 +85,6 @@ export default function calculateTf(tfVals) {
     BMI = wtVal / (((htVal * 2.54) / 100) * ((htVal * 2.54) / 100)),
     lowerKcalRange,
     upperKcalRange,
-    kcal1,
-    kcal2,
-    pro1 = 0,
-    pro2 = 0,
     range1p,
     range2p,
     bw = "IBW",
@@ -35,86 +97,38 @@ export default function calculateTf(tfVals) {
     kcalsProvided;
 
   const idealWtVal = calculateIdealWeight(gender, htVal);
+  calculateNeeds(BMI,severity);
 
-  if (severity !== "critically ill") {
-    if (BMI < 19) {
-      kcal1 = 30;
-      kcal2 = 35;
-      pro1 += 1.4;
-      pro2 += 1.6;
-    } else if (BMI >= 19 && BMI <= 25) {
-      kcal1 = 25;
-      kcal2 = 30;
-      pro1 += 1.0;
-      pro2 += 1.2;
-    } else if (BMI > 25 && BMI < 30) {
-      kcal1 = 20;
-      kcal2 = 25;
-      pro1 += 1.4;
-      pro2 += 1.6;
-    } else if (BMI >= 30 && BMI < 40) {
-      kcal1 = 15;
-      kcal2 = 18;
-      pro1 += 1.2;
-      pro2 += 1.4;
-    } else if (BMI >= 40 && BMI < 50) {
-      kcal1 = 8;
-      kcal2 = 15;
-      pro1 += 1.8;
-      pro2 += 2;
-    } else if (BMI >= 50) {
-      kcal1 = 8;
-      kcal2 = 11;
-      pro1 += 1.8;
-      pro2 += 2;
-    }
-
-    lowerKcalRange = kcal1 * wtVal;
-    upperKcalRange = kcal2 * wtVal;
-    range1p = pro1 * (BMI > 25 ? idealWtVal : wtVal);
-    range2p = pro2 * (BMI > 25 ? idealWtVal : wtVal);
-  } else {
-    if (BMI < 30) {
-      pro1 += 1.2;
-      pro2 += 2.0;
-      kcal1 = 25;
-      kcal2 = 30;
-      bw = "ABW";
-    } else if (BMI >= 30 && BMI <= 40) {
-      pro1 += 2.0;
-      pro2 += 2.0;
-      kcal1 = 11;
-      kcal2 = 14;
-    } else if (BMI > 40 && BMI <= 50) {
-      pro1 += 2.0;
-      pro2 += 2.5;
-      kcal1 = 11;
-      kcal2 = 14;
-    } else {
-      pro1 += 2.0;
-      pro2 += 2.5;
-      kcal1 = 22;
-      kcal2 = 25;
-    }
-    range1p = pro1 * (BMI >= 30 ? idealWtVal : wtVal);
-    range2p = pro2 * (BMI >= 30 ? idealWtVal : wtVal);
-    lowerKcalRange = kcal1 * (BMI > 50 ? idealWtVal : wtVal);
-    upperKcalRange = kcal2 * (BMI > 50 ? idealWtVal : wtVal);
+  if(severity !== "critically ill"){
+  lowerKcalRange = kcal1 * wtVal;
+  upperKcalRange = kcal2 * wtVal;
+  range1p = pro1 * (BMI > 25 ? idealWtVal : wtVal);
+  range2p = pro2 * (BMI > 25 ? idealWtVal : wtVal);
   }
-  if (tf === "jevity") {
+  else{
+  range1p = pro1 * (BMI >= 30 ? idealWtVal : wtVal);
+  range2p = pro2 * (BMI >= 30 ? idealWtVal : wtVal);
+  lowerKcalRange = kcal1 * (BMI > 50 ? idealWtVal : wtVal);
+  upperKcalRange = kcal2 * (BMI > 50 ? idealWtVal : wtVal);
+  }
+
+  if (tf == "Jevity") {
     tfKcals = 1.5;
     tfProtein = 67;
-  } else if (tf === "vital") {
+  } else if (tf =="Vital") {
     tfKcals = 1.0;
     tfProtein = 87;
   }
 
   let tfNeeds = (upperKcalRange + lowerKcalRange) / 2 - propofolCalories;
+
   tfRate = Math.round(tfNeeds / tfKcals / 20 / 5) * 5;
+
   protein = tfProtein * ((tfRate * 20) / 1000);
+
   kcalsProvided = tfKcals * tfRate * 20;
 
-  console.log(propofolCalories);
+
   //make something that checks if protein is adequate at max kcal allowance
   if (protein <= range1p * 0.9) {
     console.log("in protein adding loop");
@@ -156,17 +170,19 @@ export default function calculateTf(tfVals) {
     kcalsProvided + propofolCalories <= upperKcalRange * 1.1
   ) {
     return protinex
-      ? `(${Math.round(lowerKcalRange)}-${Math.round(
+      ? `${Math.round(lowerKcalRange)}-${Math.round(
           upperKcalRange
-        )}) kcals and (${Math.round(range1p)}-${Math.round(
+        )}(${(kcal1)}-${(kcal2)} kcals/kg ABW ${htVal})  ${Math.round(range1p)}-${Math.round(
           range2p
-        )}) g of protein.
-    ${tf} running at ${tfRate} ml/hr providing, with ${protinex} protinex, ${kcalsProvided} kcals, ${protein} grams of protein, and a total volume of ${
+        )}(${pro1}-${pro2}g/kg)
+    ${tf} running at ${tfRate} ml/hr + ${protinex} protinex providing, ${kcalsProvided} kcals, ${protein} grams of protein, and a total volume of ${
           tfRate * 20
         }`
-      : `Pt needs ${Math.round(lowerKcalRange)}-${Math.round(
-          upperKcalRange
-        )} kcals and ${Math.round(range1p)}-${Math.round(range2p)} g of protein
+      : `${Math.round(lowerKcalRange)}-${Math.round(
+        upperKcalRange
+      )}(${(kcal1)}-${(kcal2)} kcals/kg ABW ${htVal})  ${Math.round(range1p)}-${Math.round(
+        range2p
+      )}(${pro1}-${pro2}g/kg)
     ${tf} running at ${tfRate} ml/hr providing ${kcalsProvided} kcals, ${Math.round(
           protein
         )} grams of protein, and a total volume of ${tfRate * 20}mls`;

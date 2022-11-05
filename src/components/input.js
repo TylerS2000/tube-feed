@@ -44,8 +44,8 @@ export default function Input() {
       </select>
       <select name="tf" onChange={handleChange} value={tfVals.tf}>
         <option>Select TF</option>
-        <option value="jevity">Jevity 1.5</option>
-        <option value="vital">Vital HP</option>
+        <option value="Jevity">Jevity 1.5</option>
+        <option value="Vital">Vital HP</option>
       </select>
       <select name="severity" onChange={handleChange} value={tfVals.severity}>
         <option value="normal">normal</option>
