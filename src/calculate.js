@@ -1,3 +1,13 @@
+function calculateIdealWeight(gender, height) {
+  let idealWeight;
+  if (gender === "male") {
+    idealWeight = (106 + 6 * (height - 60)) / 2.2;
+  } else {
+    idealWeight = (100 + 5 * (height - 60)) / 2.2;
+  }
+  return Math.round(idealWeight * 10) / 10;
+}
+
 export default function calculateTf(tfVals) {
   let htVal = tfVals.height,
     wtVal = tfVals.weight,
@@ -9,7 +19,6 @@ export default function calculateTf(tfVals) {
     BMI = wtVal / (((htVal * 2.54) / 100) * ((htVal * 2.54) / 100)),
     lowerKcalRange,
     upperKcalRange,
-    idealWtVal,
     kcal1,
     kcal2,
     pro1 = 0,
@@ -25,12 +34,7 @@ export default function calculateTf(tfVals) {
     protinex = 0,
     kcalsProvided;
 
-  if (gender === "male") {
-    idealWtVal = (106 + 6 * (htVal - 60)) / 2.2;
-  } else if (gender === "female") {
-    idealWtVal = (100 + 5 * (htVal - 60)) / 2.2;
-  }
-  idealWtVal = Math.round(idealWtVal * 10) / 10;
+  const idealWtVal = calculateIdealWeight(gender, htVal);
 
   if (severity !== "critically ill") {
     if (BMI < 19) {
